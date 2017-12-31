@@ -1,0 +1,19 @@
+{
+  "name": "gpio_node_server",
+  "version": "0.10.0",
+  "description": "REST Server to Handle Raspberry GPIO",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Diego Costa",
+  "license": "ISC",
+  "dependencies": {
+    "async": "^2.6.0",
+    "body-parser": "^1.15.2",
+    "express": "^4.16.2",
+    "morgan": "^1.7.0",
+    "rpio": "^0.9.20"
+  }
+}
