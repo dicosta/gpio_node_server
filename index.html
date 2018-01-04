@@ -1,0 +1,80 @@
+<html>
+<head>
+  <title>WS example</title>
+</head>
+
+<body>
+  <h2>Socket message response: </h2>
+  <pre id="response"></pre>
+  <hr/>
+  <h2>PIN NUMBER</h2>
+  <input id="pin_number">
+  <br>
+  <h2>Websocket</h2>
+  <button onclick="setoff()">SET OFF</button>
+  <button onclick="seton()">SET ON</button>
+  <button onclick="setblink()">BLINK</button>
+  <h2>PUT</h2>
+  <button onclick="putsetoff()">SET OFF</button>
+  <button onclick="putseton()">SET ON</button>
+  <button onclick="putsetblink()">BLINK</button>
+  <script>
+
+    var socket;
+
+    document.body.onload = function() {
+        socket = new WebSocket('ws://192.168.1.10:8080/');
+
+        socket.onmessage = function(message) {
+          console.log('Socket server message', message);
+          let data = JSON.parse(message.data);
+          document.getElementById('response').innerHTML = JSON.stringify(data, null, 2);
+        };
+    }
+
+    function setoff() {
+      socket.send(JSON.stringify({id: document.getElementById("pin_number").value, 'state': 'OFF'}));      
+    }
+
+    function seton() {      
+      socket.send(JSON.stringify({id: document.getElementById("pin_number").value, 'state': 'ON'}));
+    }
+
+    function setblink() {      
+      socket.send(JSON.stringify({id: document.getElementById("pin_number").value, 'state': 'BLINK'}));
+    }
+
+
+    function put(state){
+      fetch('/api/pins/' + document.getElementById("pin_number").value, {  
+        method: 'put',  
+        headers: {  
+          "Content-type": "application/json"  
+        },  
+        body: JSON.stringify({'state' : state})  
+      })
+      .then(response => response.json())  
+      .then(function (data) {  
+          console.log('POST response:', data);
+          document.getElementById('response').innerHTML = JSON.stringify(data, null, 2);   
+      })  
+          .catch(function (error) {  
+          console.log('Request failed', error);  
+      });   
+    }
+
+
+    function putsetoff() {    
+        put('OFF');
+    }
+
+    function putseton() {      
+        put('ON');
+    }
+
+    function putsetblicnk() {      
+        put('BLINK');
+    }
+  </script>
+</body>
+</html>

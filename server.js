@@ -2,6 +2,7 @@
 // Dependencies
 // ======================
 var http        = require('http');
+var fs          = require('fs');
 var express     = require('express');
 var bodyParser  = require('body-parser');
 var morgan      = require('morgan');
@@ -39,7 +40,8 @@ gpioWrapper.initializeWrapper();
 // =======================
 
 app.get('/', function(req, res) {
-    res.send('Hello! The API is at http://localhost:' + port + '/api');
+    //res.send('Hello! The API is at http://localhost:' + port + '/api');
+    fs.createReadStream('./index.html').pipe(res);
 });
 
 // API Routes
@@ -57,6 +59,9 @@ apiRoutes.route('/pins/:id')
   .get(PinController.readPin)
   .put(PinController.writePin);
 
+apiRoutes.route('/pins')
+  .get(PinController.findPins);
+
 // apply the routes to our application with the prefix /api
 app.use('/api', apiRoutes);
 
@@ -66,8 +71,8 @@ app.use('/api', apiRoutes);
 // =======================
 console.log('Initializing OUTPUT pins...')
 
-async.forEachOf(config.outputs, function (value, key, callback) {
-    gpioPin = config.outputs[key];
+async.forEachOf(config.getOutputsIds(), function (value, key, callback) {
+    gpioPin = value;
     console.log('Initializing with LOW Pin: #' + gpioPin);
     gpioWrapper.setPinLow(gpioPin);      
     data.storePinState(gpioPin, data.OFF);
@@ -76,9 +81,14 @@ async.forEachOf(config.outputs, function (value, key, callback) {
       if (err) console.error(err.message);       
 });
 
+console.log('Initializing INPUT pins...')
 for (var i = 0, len = config.inputs.length; i < len; i++) {
     gpioWrapper.configureButton(config.inputs[i], config.getOutputForInput(config.inputs[i]));     
 }
 
-app.listen(port);
-console.log('Server listening at http://localhost:' + port);
+//for HTTP Server only:
+//app.listen(port);
+//console.log('Server listening at http://localhost:' + port);
+
+module.exports = app;
+
