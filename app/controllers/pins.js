@@ -1,10 +1,10 @@
 var config      = require('../../config');
-var data        = require('../model/data')
-var gpio        = require('rpio');
+var data        = require('../model/data');
+var gpioWrapper = require('../model/gpiowrapper');
 
 exports.readPin = function(req, res) {
   gpioPin = parseInt(req.params.id, 10);
-  if (config.outputs.indexOf(gpioPin) < 0) {
+  if (!config.isOutputConfigured(gpioPin)) {
       return res.status(404).send();
   } else {
       value = data.fetchPinState(gpioPin);
@@ -23,9 +23,12 @@ exports.writePin = function(req, res) {
               //signal to stop blinking 
               data.deleteBlinkState(gpioPin);
           }
-          gpio.open(gpioPin, gpio.OUTPUT);        
-          gpio.write(gpioPin, (data.ON === req.body.state) ? gpio.HIGH : gpio.LOW);
-          gpio.close(gpioPin, gpio.PIN_PRESERVE);
+
+          if (data.ON === req.body.state) {
+              gpioWrapper.setPinHigh(gpioPin);
+          } else {
+              gpioWrapper.setPinLow(gpioPin);
+          }
           data.storePinState(gpioPin, req.body.state);
           return res.status(200).jsonp(req.body.state);    
       } else if (data.BLINK === req.body.state) {
@@ -51,9 +54,13 @@ function startBlinking(pinNumber) {
 
     function toggleLED() {
         if (data.keepBlinking(pinNumber)) {
-            gpio.open(pinNumber, gpio.OUTPUT);  
-            gpio.write(pinNumber, data.fetchBlinkState(pinNumber) ? gpio.HIGH : gpio.LOW);
-            gpio.close(pinNumber, gpio.PIN_PRESERVE);
+
+            if (data.fetchBlinkState(pinNumber)) {
+                gpioWrapper.setPinHigh(gpioPin);
+            } else {
+                gpioWrapper.setPinLow(gpioPin);
+            }
+
             data.toggleBlinkState(pinNumber);
         } else {
             clearInterval(blinkInterval);

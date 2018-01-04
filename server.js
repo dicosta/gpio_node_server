@@ -6,8 +6,8 @@ var express     = require('express');
 var bodyParser  = require('body-parser');
 var morgan      = require('morgan');
 var app         = express();
-var gpio        = require('rpio');
 var async       = require("async");
+var gpioWrapper = require('./app/model/gpiowrapper');
 
 
 // =====================
@@ -31,6 +31,8 @@ app.disable('etag'); //prevent 304
 
 // use morgan to log requests to the console
 app.use(morgan('dev'));
+
+gpioWrapper.initializeWrapper();
 
 // =======================
 // API Routes
@@ -64,22 +66,19 @@ app.use('/api', apiRoutes);
 // =======================
 console.log('Initializing OUTPUT pins...')
 
-gpio.init({mapping: 'gpio'});
-
 async.forEachOf(config.outputs, function (value, key, callback) {
     gpioPin = config.outputs[key];
-    gpio.open(gpioPin, gpio.OUTPUT);
-    gpio.write(gpioPin, gpio.LOW);
-    
     console.log('Initializing with LOW Pin: #' + gpioPin);
-    gpio.close(gpioPin);
+    gpioWrapper.setPinLow(gpioPin);      
+    data.storePinState(gpioPin, data.OFF);
     callback();
 }, function (err) {
-    if (err) console.error(err.message);  
-      for (var i = 0, len = config.outputs.length; i < len; i++) {
-        data.storePinState([config.outputs[i]], data.OFF);
-      }
-
-      app.listen(port);
-      console.log('Server listening at http://localhost:' + port);
+      if (err) console.error(err.message);       
 });
+
+for (var i = 0, len = config.inputs.length; i < len; i++) {
+    gpioWrapper.configureButton(config.inputs[i], config.getOutputForInput(config.inputs[i]));     
+}
+
+app.listen(port);
+console.log('Server listening at http://localhost:' + port);
