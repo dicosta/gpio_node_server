@@ -21,7 +21,7 @@ wss.on('connection', function connection(connection) {
 		//connection.send(JSON.stringify({answer: 42}));
 		var request = JSON.parse(message);
 		console.log('received: ' + message);
-		if (PinController.doPinStateWrite(request.id, request.state)) {
+		if (PinController.writePin(request.id, request.state)) {
 			connection.send(JSON.stringify('OK! New State Applied!'));
 		} else {
 			connection.send(JSON.stringify('Error'));

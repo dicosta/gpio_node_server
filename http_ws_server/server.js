@@ -10,12 +10,10 @@ var app         = express();
 var async       = require("async");
 var gpioWrapper = require('./app/model/gpiowrapper');
 
-
 // =====================
 // Controllers
 // =====================
 var PinController = require('./app/controllers/pins');
-
 
 // =======================
 // Configuration
@@ -40,7 +38,6 @@ gpioWrapper.initializeWrapper();
 // =======================
 
 app.get('/', function(req, res) {
-    //res.send('Hello! The API is at http://localhost:' + port + '/api');
     fs.createReadStream('./index.html').pipe(res);
 });
 
@@ -51,16 +48,16 @@ var apiRoutes = express.Router();
 
 // Route to show a random message (GET http://localhost:8080/api/)
 apiRoutes.get('/', function(req, res) {
-  res.status(200).json('Welcome to Basic Server API');
+  res.status(200).json('Welcome to GPIO API.');
 });
 
 //Pin Routes
 apiRoutes.route('/pins/:id')  
-  .get(PinController.readPin)
-  .put(PinController.writePin);
+  .get(PinController.HTTPReadPin)
+  .put(PinController.HTTPWritePin);
 
 apiRoutes.route('/pins')
-  .get(PinController.findPins);
+  .get(PinController.HTTPFindPins);
 
 // apply the routes to our application with the prefix /api
 app.use('/api', apiRoutes);
@@ -73,9 +70,9 @@ console.log('Initializing OUTPUT pins...')
 
 async.forEachOf(config.getOutputsIds(), function (value, key, callback) {
     gpioPin = value;
+
     console.log('Initializing with LOW Pin: #' + gpioPin);
-    gpioWrapper.setPinLow(gpioPin);      
-    data.storePinState(gpioPin, data.OFF);
+    PinController.writePin(gpioPin, data.OFF);
     callback();
 }, function (err) {
       if (err) console.error(err.message);       

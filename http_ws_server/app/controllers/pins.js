@@ -4,66 +4,43 @@ var gpioWrapper = require('../model/gpiowrapper');
 
 var _this = this;
 
-exports.readPin = function(req, res) {
+exports.HTTPReadPin = function(req, res) {
   gpioPin = parseInt(req.params.id, 10);
+
   if (!config.isOutputConfigured(gpioPin)) {
       return res.status(404).send();
   } else {
-      value = _this.doPinStateRead(gpioPin);
+      value = _this.readPin(gpioPin);
       return res.status(200).jsonp(value);
   }  
-};
+}
 
-exports.writePin = function(req, res) {
+exports.HTTPWritePin = function(req, res) {
   gpioPin = parseInt(req.params.id, 10);
+  newState = req.body.state;
 
   if (!config.isOutputConfigured(gpioPin)) {
       return res.status(404).send();
   } else {
-      /*
-      if (data.OFF === req.body.state || data.ON === req.body.state) {
-          if (data.isBlinking(gpioPin)) {
-              //signal to stop blinking 
-              data.deleteBlinkState(gpioPin);
-          }
-
-          if (data.ON === req.body.state) {
-              gpioWrapper.setPinHigh(gpioPin);
-          } else {
-              gpioWrapper.setPinLow(gpioPin);
-          }
-          data.storePinState(gpioPin, req.body.state);
-          return res.status(200).jsonp(req.body.state);    
-      } else if (data.BLINK === req.body.state) {
-          if (data.isBlinking(gpioPin)) {
-              //already blinking
-              return res.status(400).send();
-          } else {
-              startBlinking(gpioPin);
-              return res.status(200).jsonp(req.body.state);    
-          }
-      } else {
-          //unknown state
-          return res.status(400).send();
-      }
-      */
-      if (_this.doPinStateWrite(gpioPin, req.body.state)) {
-          return res.status(200).jsonp(req.body.state);    
+      if (_this.writePin(gpioPin, newState)) {
+          return res.status(200).jsonp(newState);
       } else {
           return res.status(400).send();
       }
   }  
 };
 
-exports.findPins = function(req, res) {
+exports.HTTPFindPins = function(req, res) {
   return res.status(200).jsonp(config.outputs);
-};
-
-exports.doPinStateRead = function(pinNumber) {
-    return data.fetchPinState(gpioPin);
 }
 
-exports.doPinStateWrite = function(pinNumber, newState) {
+
+
+exports.readPin = function(pinNumber) {
+    return data.fetchPinState(gpioPin);
+};
+
+exports.writePin = function(pinNumber, newState) {
     if (data.OFF === newState || data.ON === newState) {
         if (data.isBlinking(pinNumber)) {
             //signal to stop blinking 
