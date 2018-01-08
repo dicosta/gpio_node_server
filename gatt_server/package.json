@@ -1,0 +1,14 @@
+{
+  "name": "gatt_server",
+  "version": "0.10.0",
+  "description": "GATT Server to Handle Raspberry GPIO",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Diego Costa",
+  "license": "ISC",
+  "dependencies": {
+  }
+}
