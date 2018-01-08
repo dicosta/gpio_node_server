@@ -1,0 +1,22 @@
+var util = require('util');
+var bleno = require('bleno');
+
+var BlenoPrimaryService = bleno.PrimaryService;
+
+var GPIOCharacteristicRead = require('./gpio-characteristic-read');
+var GPIOCharacteristicWrite = require('./gpio-characteristic-write');
+
+
+function GPIOService() {
+  GPIOService.super_.call(this, {
+      uuid: '13333333333333333333333333333337',
+      characteristics: [
+          new GPIOCharacteristicRead(),
+          new GPIOCharacteristicWrite()
+      ]
+  });
+}
+
+util.inherits(GPIOService, BlenoPrimaryService);
+
+module.exports = GPIOService;
