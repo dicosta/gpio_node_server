@@ -6,7 +6,7 @@ var Characteristic = bleno.Characteristic;
 
 var GPIOCharacteristicWrite = function() {
   GPIOCharacteristicWrite.super_.call(this, {
-    uuid: '13333333333333333333333333330002',
+    uuid: '13333333333333333333333333330003',
     properties: ['write'],
     descriptors: [
       new Descriptor({

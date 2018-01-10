@@ -1,5 +1,5 @@
 var bleno = require('bleno');
-var gpioService = require('./gpio-service');
+var GPIOService = require('./gpio-service');
 
 var primaryService = new GPIOService();
 
