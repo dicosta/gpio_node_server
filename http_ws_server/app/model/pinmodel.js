@@ -4,6 +4,8 @@ var gpioWrapper = require('../model/gpiowrapper');
 var EventEmitter = require('events').EventEmitter;
 var eventBus = new EventEmitter();
 
+var _this = this;
+
 exports.readAllPins = function() {
     return data.output_values;
 }
@@ -29,7 +31,8 @@ exports.writePin = function(pinNumber, newState) {
             gpioWrapper.setPinLow(pinNumber);
         }
         data.storePinState(pinNumber, newState);
-        eventBus.emit('model-changed');
+
+        eventBus.emit('model-changed'); //notify listeners
         return true;
     } else if (data.BLINK === newState) {
         if (data.isBlinking(pinNumber)) {
@@ -67,5 +70,14 @@ function startBlinking(pinNumber) {
         }
     }
 }
+
+gpioWrapper.eventBus.on('input-changed', function(pinNumber) {
+    if (data.fetchPinState(pinNumber) === data.OFF) {
+        _this.writePin(pinNumber, data.ON);
+    } else {
+        _this.writePin(pinNumber, data.OFF);
+    }
+});
+
 
 exports.eventBus = eventBus;

@@ -1,7 +1,7 @@
 var data        = require('../model/data')
 var gpio        = require('rpio');
-
-var _this = this;
+var EventEmitter = require('events').EventEmitter;
+var eventBus = new EventEmitter();
 
 exports.initializeWrapper = function() {
 	gpio.init({mapping: 'gpio'});
@@ -25,15 +25,11 @@ exports.configureButton = function(inputPinNumber, outputPinNumber) {
 	function pollCallback(pin)
 	{
 		if (!gpio.read(pin)) {
-			if (data.fetchPinState(gpioPin) === data.OFF) {
-				_this.setPinHigh(outputPinNumber);
-				data.storePinState(gpioPin, data.ON);
-			} else {
-				_this.setPinLow(outputPinNumber);				
-				data.storePinState(gpioPin, data.OFF);
-			}
+			eventBus.emit('input-changed', outputPinNumber);
 		}
 	}
 
 	gpio.poll(inputPinNumber, pollCallback);
 }
+
+exports.eventBus = eventBus;
