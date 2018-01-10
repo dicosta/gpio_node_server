@@ -20,7 +20,11 @@ wss.on('connection', function connection(connection) {
 	console.log('new Client Connection established...');
 
 	pinModel.eventBus.on('model-changed', function() {
-		connection.send(JSON.stringify(pinModel.readAllPins()));
+		if (connection.readyState !== connection.OPEN) {
+			console.log('connection state is not OPEN'); //TODO: fix : unsuscribe this connection from model bus
+		} else {
+			connection.send(JSON.stringify(pinModel.readAllPins()));
+		}
 	});
 
 	connection.on('message', function incoming(message) {
