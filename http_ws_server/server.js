@@ -9,6 +9,9 @@ var morgan      = require('morgan');
 var app         = express();
 var async       = require("async");
 var gpioWrapper = require('./app/model/gpiowrapper');
+var config      = require('./config'); 
+var data        = require('./app/model/data');
+var pinModel    = require('./app/model/pinmodel');
 
 // =====================
 // Controllers
@@ -19,8 +22,6 @@ var PinController = require('./app/controllers/pins');
 // Configuration
 // =======================
 var port = process.env.PORT || 8080; 
-var config = require('./config'); 
-var data = require('./app/model/data')
 
 // use body parser so we can get info from POST and/or URL parameters
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -72,7 +73,7 @@ async.forEachOf(config.getOutputsIds(), function (value, key, callback) {
     gpioPin = value;
 
     console.log('Initializing with LOW Pin: #' + gpioPin);
-    PinController.writePin(gpioPin, data.OFF);
+    pinModel.writePin(gpioPin, data.OFF);
     callback();
 }, function (err) {
       if (err) console.error(err.message);       
@@ -88,4 +89,3 @@ for (var i = 0, len = config.inputs.length; i < len; i++) {
 //console.log('Server listening at http://localhost:' + port);
 
 module.exports = app;
-

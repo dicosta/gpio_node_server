@@ -1,9 +1,12 @@
 var WSServer  = require('ws').Server;
 var server    = require('http').createServer();
-var config    = require('./config'); 
 
 var app       = require('./server');
-var PinController = require('./app/controllers/pins');
+var pinModel = require('./app/model/pinmodel');
+
+
+var ACTION_WRITE = 'WRITE';
+var ACTION_READ = 'READ'
 
 // Create web socket server on top of a regular http server
 var wss = new WSServer({
@@ -16,15 +19,21 @@ server.on('request', app);
 wss.on('connection', function connection(connection) {
 	console.log('new Client Connection established...');
 
+	pinModel.eventBus.on('model-changed', function() {
+		connection.send(JSON.stringify(pinModel.readAllPins()));
+	});
+
 	connection.on('message', function incoming(message) {
-		//console.log(`received: ${message}`);
-		//connection.send(JSON.stringify({answer: 42}));
 		var request = JSON.parse(message);
-		console.log('received: ' + message);
-		if (PinController.writePin(request.id, request.state)) {
-			connection.send(JSON.stringify('OK! New State Applied!'));
+		if (ACTION_WRITE === request.action) {
+			console.log('received: ' + message);
+			pinModel.writePin(request.id, request.state);
 		} else {
-			connection.send(JSON.stringify('Error'));
+			if (request.id !== undefined) {
+				connection.send(JSON.stringify(pinModel.readPin(request.id)));
+			} else {
+				connection.send(JSON.stringify(pinModel.readAllPins()));
+			}
 		}
 	});
 
@@ -33,7 +42,7 @@ wss.on('connection', function connection(connection) {
   	});
 
 	//we greet new connections with the list of pins we can handle...
-	connection.send(JSON.stringify(config.getOutputs()));
+	connection.send(JSON.stringify(pinModel.findPins()));
 });
 
 

@@ -18,6 +18,9 @@
   <button onclick="putsetoff()">SET OFF</button>
   <button onclick="putseton()">SET ON</button>
   <button onclick="putsetblink()">BLINK</button>
+  <h2>READ</h2>
+  <button onclick="readpin()">READ PIN</button>
+  <button onclick="readall()">READ ALL</button>
   <script>
 
     var socket;
@@ -32,16 +35,24 @@
         };
     }
 
+    function readpin() {
+      socket.send(JSON.stringify({'action' : 'READ', id: document.getElementById("pin_number").value}));
+    }
+
+    function readall() {
+      socket.send(JSON.stringify({'action' : 'READ'}));
+    }    
+
     function setoff() {
-      socket.send(JSON.stringify({id: document.getElementById("pin_number").value, 'state': 'OFF'}));      
+      socket.send(JSON.stringify({'action': 'WRITE', id: document.getElementById("pin_number").value, 'state': 'OFF'}));      
     }
 
     function seton() {      
-      socket.send(JSON.stringify({id: document.getElementById("pin_number").value, 'state': 'ON'}));
+      socket.send(JSON.stringify({'action': 'WRITE', id: document.getElementById("pin_number").value, 'state': 'ON'}));
     }
 
     function setblink() {      
-      socket.send(JSON.stringify({id: document.getElementById("pin_number").value, 'state': 'BLINK'}));
+      socket.send(JSON.stringify({'action': 'WRITE', id: document.getElementById("pin_number").value, 'state': 'BLINK'}));
     }
 
 
@@ -56,7 +67,7 @@
       .then(response => response.json())  
       .then(function (data) {  
           console.log('POST response:', data);
-          document.getElementById('response').innerHTML = JSON.stringify(data, null, 2);   
+          //document.getElementById('response').innerHTML = JSON.stringify(data, null, 2);   
       })  
           .catch(function (error) {  
           console.log('Request failed', error);  
@@ -72,7 +83,7 @@
         put('ON');
     }
 
-    function putsetblicnk() {      
+    function putsetblink() {      
         put('BLINK');
     }
   </script>
