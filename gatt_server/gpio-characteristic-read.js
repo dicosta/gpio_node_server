@@ -9,8 +9,8 @@ var GPIOCharacteristicRead = function(socket) {
   var _this = this;
   
   function incomingDataFromWS(data) {
-    console.log('<SUBSCRIPTION> Received data from WS: ' + data + data);
-    _this._indicateDataStack = new Buffer(data + data);
+    console.log('<SUBSCRIPTION> Received data from WS: ' + data);
+    _this._indicateDataStack = new Buffer(data);
 
     if (_this._updateValueCallback) {      
       value = _this.getNextChunkToIndicate(_this._indicateDataStack)
