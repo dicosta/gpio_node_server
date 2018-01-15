@@ -26,3 +26,19 @@ bleno.on('advertisingStart', function(error) {
         });
     }
 });
+
+bleno.on('accept', function(clientAddress) {
+  console.log('on -> accept, client: ' + clientAddress);
+});
+
+bleno.on('disconnect', function(clientAddress) {
+  console.log('on -> disconnect, client: ' + clientAddress);
+});
+
+bleno.on('rssiUpdate', function(rssi) {
+  console.log('on -> rssiUpdate: ' + rssi);
+});
+
+bleno.on('mtuChange', function(mtu) {
+  console.log('on -> mtuChange: ' + mtu);
+});
