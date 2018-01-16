@@ -1,4 +1,3 @@
-var data        = require('../model/data')
 var gpio        = require('rpio');
 var EventEmitter = require('events').EventEmitter;
 var eventBus = new EventEmitter();

@@ -31,7 +31,7 @@ wss.on('connection', function connection(connection) {
 		var request = JSON.parse(message);
 		if (ACTION_WRITE === request.action) {
 			console.log('received: ' + message);
-			pinModel.writePin(request.id, request.state);
+			pinModel.writePin(request.id, request.state, request.brightness);
 		} else {
 			if (request.id !== undefined) {
 				connection.send(JSON.stringify(pinModel.readPin(request.id)));

@@ -14,10 +14,12 @@
   <button onclick="setoff()">SET OFF</button>
   <button onclick="seton()">SET ON</button>
   <button onclick="setblink()">BLINK</button>
+  <button onclick="setdim()">DIM 50%</button>
   <h2>PUT</h2>
   <button onclick="putsetoff()">SET OFF</button>
   <button onclick="putseton()">SET ON</button>
   <button onclick="putsetblink()">BLINK</button>
+  <button onclick="putsetdim()">DIM 50%</button>
   <h2>READ</h2>
   <button onclick="readpin()">READ PIN</button>
   <button onclick="readall()">READ ALL</button>
@@ -55,6 +57,10 @@
       socket.send(JSON.stringify({'action': 'WRITE', id: document.getElementById("pin_number").value, 'state': 'BLINK'}));
     }
 
+    function setdim() {      
+      socket.send(JSON.stringify({'action': 'WRITE', id: document.getElementById("pin_number").value, 'state': 'DIM', 'brightness' : '0.5'}));
+    }
+
 
     function put(state){
       fetch('/api/pins/' + document.getElementById("pin_number").value, {  
@@ -63,6 +69,24 @@
           "Content-type": "application/json"  
         },  
         body: JSON.stringify({'state' : state})  
+      })
+      .then(response => response.json())  
+      .then(function (data) {  
+          console.log('POST response:', data);
+          //document.getElementById('response').innerHTML = JSON.stringify(data, null, 2);   
+      })  
+          .catch(function (error) {  
+          console.log('Request failed', error);  
+      });   
+    }
+
+    function putwithbrightness(state, brightness){
+      fetch('/api/pins/' + document.getElementById("pin_number").value, {  
+        method: 'put',  
+        headers: {  
+          "Content-type": "application/json"  
+        },  
+        body: JSON.stringify({'state' : state, 'brightness' : brightness})  
       })
       .then(response => response.json())  
       .then(function (data) {  
@@ -85,6 +109,10 @@
 
     function putsetblink() {      
         put('BLINK');
+    }
+
+    function putsetdim() {      
+        putwithbrightness('DIM', '0.5');
     }
   </script>
 </body>
