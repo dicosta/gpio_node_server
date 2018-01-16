@@ -16,16 +16,16 @@ var wss = new WSServer({
 // Also mount the app here
 server.on('request', app);
 
+
+pinModel.eventBus.on('model-changed', function() {
+   	wss.clients.forEach(function each(client) {
+      client.send(JSON.stringify(pinModel.readAllPins()));
+    });
+});
+
+
 wss.on('connection', function connection(connection) {
 	console.log('new Client Connection established...');
-
-	pinModel.eventBus.on('model-changed', function() {
-		if (connection.readyState !== connection.OPEN) {
-			console.log('connection state is not OPEN'); //TODO: fix : unsuscribe this connection from model bus
-		} else {
-			connection.send(JSON.stringify(pinModel.readAllPins()));
-		}
-	});
 
 	connection.on('message', function incoming(message) {
 		var request = JSON.parse(message);
