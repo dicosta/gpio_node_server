@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "bleno": "0.4.2",
+    "rpio": "^0.9.20",
     "ws": "^4.0.0"
   }
 }

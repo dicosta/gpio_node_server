@@ -1,4 +1,4 @@
-exports.outputs = [{'id': 13, 'color': 'GREEN', 'dimmable' : true }, {'id':21, 'color': "BLUE", 'dimmable' : false}, {'id':20, 'color': "YELLOW", 'dimmable' : false}, {'id':16, 'color': "RED", 'dimmable' : false}];
+exports.outputs = [{'id': 13, 'color': 'GREEN', 'dimmable' : true }, {'id':20, 'color': "YELLOW", 'dimmable' : false}, {'id':16, 'color': "RED", 'dimmable' : false}];
 exports.inputs  = [18];
 exports.rel_input_output = {18 : 13};
 
