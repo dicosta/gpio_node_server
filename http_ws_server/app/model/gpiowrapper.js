@@ -9,13 +9,13 @@ exports.initializeWrapper = function() {
 exports.setPinLow = function(pinNumber) {
 	gpio.open(pinNumber, gpio.OUTPUT);
     gpio.write(pinNumber, gpio.LOW);
-    gpio.close(gpioPin, gpio.PIN_PRESERVE);
+    gpio.close(pinNumber, gpio.PIN_PRESERVE);
 }
 
 exports.setPinHigh = function(pinNumber) {
 	gpio.open(pinNumber, gpio.OUTPUT);
     gpio.write(pinNumber, gpio.HIGH);
-    gpio.close(gpioPin, gpio.PIN_PRESERVE);
+    gpio.close(pinNumber, gpio.PIN_PRESERVE);
 }
 
 exports.configureButton = function(inputPinNumber, outputPinNumber) {	

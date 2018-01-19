@@ -47,6 +47,10 @@ exports.fetchPin = function(pinNumber) {
     return pinItem;
 }
 
+exports.createPin = function(newPinItem) {
+    this.output_values.push(newPinItem);    
+}
+
 exports.initializeBlinkState = function(pinNumber) {
     this.output_blink_state[pinNumber] = false;
 }

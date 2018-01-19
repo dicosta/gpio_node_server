@@ -82,6 +82,11 @@ exports.writePin = function(pinNumber, newState, newBrightness) {
     }    
 }
 
+exports.initializePin = function(pinItem) {
+    data.createPin(pinItem);
+    _this.writePin(parseInt(pinItem.id), data.OFF);
+}
+
 function startBlinking(pinNumber) {
     data.initializeBlinkState(pinNumber);
     data.storePin(pinNumber, data.BLINK);

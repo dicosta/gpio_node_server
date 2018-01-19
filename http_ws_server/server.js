@@ -69,11 +69,11 @@ app.use('/api', apiRoutes);
 // =======================
 console.log('Initializing OUTPUT pins...')
 
-async.forEachOf(config.getOutputsIds(), function (value, key, callback) {
-    gpioPin = value;
-
-    console.log('Initializing with LOW Pin: #' + gpioPin);
-    pinModel.writePin(gpioPin, data.OFF);
+async.forEachOf(config.getOutputs(), function (value, key, callback) {
+    pinItem = value;
+  
+    pinModel.initializePin(value);
+    console.log('Initializing with LOW Pin: #' + pinItem.id);
     callback();
 }, function (err) {
       if (err) console.error(err.message);       

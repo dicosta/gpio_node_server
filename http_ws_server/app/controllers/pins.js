@@ -29,5 +29,5 @@ exports.HTTPWritePin = function(req, res) {
 };
 
 exports.HTTPFindPins = function(req, res) {
-    return res.status(200).jsonp(pinModel.findPins());
+    return res.status(200).jsonp(pinModel.readAllPins());
 }
