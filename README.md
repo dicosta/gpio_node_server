@@ -1,2 +1,2 @@
 # gpio_node_server
-Node HTTP/WS server to  handle GPIO pins
+Node HTTP/WebSocket/Bluetooth server to handle Raspberry Pi GPIO pins
