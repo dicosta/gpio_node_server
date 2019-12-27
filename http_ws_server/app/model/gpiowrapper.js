@@ -2,8 +2,11 @@ var gpio        = require('rpio');
 var EventEmitter = require('events').EventEmitter;
 var eventBus = new EventEmitter();
 
+var refresh_rate = 64;
+var pwm_max = 100;
+
 exports.initializeWrapper = function() {
-	gpio.init({mapping: 'gpio'});
+	gpio.init({mapping: 'gpio', gpiomem: false});
 }
 
 exports.setPinLow = function(pinNumber) {
@@ -15,6 +18,16 @@ exports.setPinLow = function(pinNumber) {
 exports.setPinHigh = function(pinNumber) {
 	gpio.open(pinNumber, gpio.OUTPUT);
     gpio.write(pinNumber, gpio.HIGH);
+    gpio.close(pinNumber, gpio.PIN_PRESERVE);
+}
+
+exports.setPWMPinLevel = function(pinNumber, level, alreadyDimmed) {       
+	gpio.open(pinNumber, gpio.PWM);
+    if (!alreadyDimmed) {
+      gpio.pwmSetClockDivider(refresh_rate);
+      gpio.pwmSetRange(pinNumber, pwm_max);
+    }
+    gpio.pwmSetData(pinNumber, parseInt(level,10));
     gpio.close(pinNumber, gpio.PIN_PRESERVE);
 }
 

@@ -6,16 +6,6 @@ var eventBus = new EventEmitter();
 var NanoTimer = require('nanotimer');
 var nanoTimer = new NanoTimer();
 
-/*
-var dim_frequency = 100;
-var dim_cycle_length = 1000000 / dim_frequency;
-
-NOTE: replaced these values with lower ones to prevent CPU to go up to 100%
-TODO: use HW PWM
-*/
-var dim_frequency = 0.15;
-var dim_cycle_length = 10000 / dim_frequency;
-
 var _this = this;
 
 exports.readAllPins = function() {
@@ -110,8 +100,6 @@ function startBlinking(pinNumber) {
     }
 }
 
-//NOTE: this dim function (Software PWM) is very CPU intensive (reaches 100%)
-//replace it with HW PWM
 function setDimLevel(pinNumber, brigthness) {
     alreadyDimmed = data.isDimmed(pinNumber);
     data.storePin(pinNumber, data.DIM, brigthness);
@@ -120,27 +108,7 @@ function setDimLevel(pinNumber, brigthness) {
     
     var pinItem = data.fetchPin(pinNumber)    
 
-    time_on = brigthness * dim_cycle_length;
-    time_off = dim_cycle_length - time_on;
-
-    function turnOnFunction() {
-        if (pinItem.state === data.DIM) {
-
-            gpioWrapper.setPinHigh(pinNumber);
-            nanoTimer.setTimeout(turnOffFunction, '', time_on + 'u');
-            
-            function turnOffFunction() {
-                gpioWrapper.setPinLow(pinNumber);
-                nanoTimer.setTimeout(turnOnFunction, '', time_off + 'u');
-            }
-        } else {
-            console.log('DIM OFF');
-        }
-    }
-    
-    if (!alreadyDimmed) {
-        setTimeout(function() { turnOnFunction(); }, 200);
-    }    
+    gpioWrapper.setPWMPinLevel(pinNumber, brigthness, alreadyDimmed);   
 }
 
 gpioWrapper.eventBus.on('input-changed', function(pinNumber) {

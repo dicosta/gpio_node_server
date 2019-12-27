@@ -14,12 +14,18 @@
   <button onclick="setoff()">SET OFF</button>
   <button onclick="seton()">SET ON</button>
   <button onclick="setblink()">BLINK</button>
-  <button onclick="setdim()">DIM 50%</button>
+  <button onclick="setdim10()">DIM 10%</button>
+  <button onclick="setdim25()">DIM 25%</button>
+  <button onclick="setdim50()">DIM 50%</button>
+  <button onclick="setdim75()">DIM 75%</button>
   <h2>PUT</h2>
   <button onclick="putsetoff()">SET OFF</button>
   <button onclick="putseton()">SET ON</button>
   <button onclick="putsetblink()">BLINK</button>
-  <button onclick="putsetdim()">DIM 50%</button>
+  <button onclick="putsetdim10()">DIM 10%</button>
+  <button onclick="putsetdim25()">DIM 25%</button>
+  <button onclick="putsetdim50()">DIM 50%</button>
+  <button onclick="putsetdim75()">DIM 75%</button>
   <h2>READ</h2>
   <button onclick="readpin()">READ PIN</button>
   <button onclick="readall()">READ ALL</button>
@@ -57,8 +63,20 @@
       socket.send(JSON.stringify({'action': 'WRITE', id: document.getElementById("pin_number").value, 'state': 'BLINK'}));
     }
 
-    function setdim() {      
-      socket.send(JSON.stringify({'action': 'WRITE', id: document.getElementById("pin_number").value, 'state': 'DIM', 'brightness' : '0.5'}));
+    function setdim10() {      
+      socket.send(JSON.stringify({'action': 'WRITE', id: document.getElementById("pin_number").value, 'state': 'DIM', 'brightness' : '10'}));
+    }
+
+    function setdim25() {      
+      socket.send(JSON.stringify({'action': 'WRITE', id: document.getElementById("pin_number").value, 'state': 'DIM', 'brightness' : '25'}));
+    }
+
+    function setdim50() {      
+      socket.send(JSON.stringify({'action': 'WRITE', id: document.getElementById("pin_number").value, 'state': 'DIM', 'brightness' : '50'}));
+    }
+
+    function setdim75() {      
+      socket.send(JSON.stringify({'action': 'WRITE', id: document.getElementById("pin_number").value, 'state': 'DIM', 'brightness' : '75'}));
     }
 
 
@@ -111,8 +129,20 @@
         put('BLINK');
     }
 
-    function putsetdim() {      
-        putwithbrightness('DIM', '0.5');
+    function putsetdim10() {      
+        putwithbrightness('DIM', '10');
+    }
+
+    function putsetdim25() {      
+        putwithbrightness('DIM', '25');
+    }
+
+    function putsetdim50() {      
+        putwithbrightness('DIM', '50');
+    }
+
+    function putsetdim75() {      
+        putwithbrightness('DIM', '75');
     }
   </script>
 </body>

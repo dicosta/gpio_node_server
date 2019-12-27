@@ -15,7 +15,7 @@ exports.HTTPReadPin = function(req, res) {
 exports.HTTPWritePin = function(req, res) {
   gpioPin = parseInt(req.params.id, 10);
   newState = req.body.state;
-  newBrightness = req.body.brightness
+  newBrightness = req.body.brightness;
 
   if (!config.isOutputConfigured(gpioPin)) {
       return res.status(404).send();
